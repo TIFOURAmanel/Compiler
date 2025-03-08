@@ -1,3 +1,6 @@
+
+--ajouter  nombres pos neg 
+
 %{
 
 #include<stdio.h>
@@ -68,6 +71,8 @@ output {printf("mot cle : %s \n",yytext); return output}
 "/" {printf("division \n"); return division}
 ":=" {printf("affectation \n"); return affect}
 \"  {printf("Guillemets \n"); return Guillemets}
+"[" {printf("corechets ouvrante \n");}
+"]" {printf("corechets fermente \n");}
 
 
 
