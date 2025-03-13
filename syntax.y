@@ -6,18 +6,18 @@
 %token  MainPrgm idf pnt_virgul var BeginPg accolade_ouvr accolade_ferm EndPg let deux_pnts const egal virgul float int entier_pos corechet_ouvr corechet_ferm entier_neg float_pos float_neg affect chaine if then parenthese_fermante parenthese_ouvrante input output add soustract div multipl inf sup inf_ou_egal sup_ou_egal neg and or diff for from to step do while comment_une comment_plsr else reel_pos reel_neg identiq 
 
 %start DEBUT
-
+ 
 
 %%
 DEBUT : MainPrgm idf pnt_virgul var DECLARATION BeginPg accolade_ouvr INSTRUCTIONS accolade_ferm EndPg pnt_virgul;
 
-DECLARATION : let VARIABLE1 deux_pnts TYPE1 pnt_virgul | let VARIABLE2 deux_pnts TYPE2 pnt_virgul | const idf deux_pnts TYPE1 egal VALEUR ;
+DECLARATION : let VARIABLE1 deux_pnts TYPE1 pnt_virgul | let idf deux_pnts TYPE2 pnt_virgul | const idf deux_pnts TYPE1 egal VALEUR ;
 
 VALEUR: entier_pos | entier_neg | float_pos | float_neg  ;
 
 VARIABLE1: idf virgul VARIABLE1 | idf ;
 
-VARIABLE2 : idf ;
+
 
 TYPE1 : float | int ;
 
@@ -27,13 +27,14 @@ INSTRUCTIONS :  | idf AFFECTATION_NOR INSTRUCTIONS | idf AFFECTATION_TAB INSTRUC
 
 AFFECTATION_TAB : corechet_ouvr entier_pos corechet_ferm AFFECTATION_NOR ;
 
-AFFECTATION_NOR : affect VALEUR | affect EXPRESSION ;
+AFFECTATION_NOR : affect EXPRESSION pnt_virgul ;
 
-EXPRESSION : OPERAND OPERATEUR_ARITHM OPERAND ; 
 
-OPERAND : idf | VALEUR ;
+EXPRESSION :  parenthese_ouvrante EXPRESSION parenthese_fermante | EXPRESSION OPERATEUR_ARITHM EXPRESSON | OPERAND | VALEUR ;
 
-OPERATEUR_ARITHM : add | soustract | div | multipl 
+OPERAND : idf | VALEUR | neg OPERAND ;
+
+OPERATEUR_ARITHM : add | soustract | div | multipl ;
 
 INPUT : input parenthese_ouvrante idf parenthese_fermante pnt_virgul ;
 
@@ -41,17 +42,17 @@ OUTPUT : output parenthese_ouvrante DANS_OUTPUT parenthese_fermante pnt_virgul ;
 
 DANS_OUTPUT: chaine | idf | chaine virgul DANS_OUTPUT | idf virgul DANS_OUTPUT ;
 
-CONDITION : if parenthese_ouvrante EXPRESSION_COND parenthese_fermante then accolade_ouvr INSTRUCTIONS SINON ;
+CONDITION : if parenthese_ouvrante EXPRESSION_COND parenthese_fermante then accolade_ouvr INSTRUCTIONS accolade_fermante SINON ; 
 
-SINON : accolade_ferm | 
+SINON : else accolade_ouvr INSTRUCTIONS accolade_ferm |  ;
 
-EXPRESSION_COND : OPERAND OPERATEUR_COND OPERAND | neg OPERAND OPERATEUR_COND OPERAND | EXPRESSION_COND and EXPRESSION_COND | EXPRESSION_COND or EXPRESSION_COND ;   
+EXPRESSION_COND : OPERAND OPERATEUR_COND OPERAND | EXPRESSION_COND and EXPRESSION_COND | EXPRESSION_COND or EXPRESSION_COND ;   
 
 OPERATEUR_COND : inf | sup | inf_ou_egal | sup_ou_egal | identiq | diff ;
 
-LOOP_DO : do accolade_ouvr INSTRUCTIONS accolade_ferm while EXPRESSION_COND pnt_virgul ;
+LOOP_DO : do accolade_ouvr INSTRUCTIONS accolade_ferm while parenthese_ouvrante EXPRESSION_COND parenthese_fermante pnt_virgul ;
 
-LOOP_FOR : for idf from entier_pos to entier_pos step entier_pos accolade_ouvr INSTRUCTIONS accolade_ferm ;
+LOOP_FOR : for idf from entier_pos to entier_pos step entier_pos accolade_ouvr INSTRUCTIONS accolade_ferm ; 
 
 
 
