@@ -1,28 +1,68 @@
 
---  ajouter les commentaires f grammaire 
-
 %{
 #include<stdio.h>
-
 %}
 
-%token  MainPrgm var BeginPg EndPg let AND OR if then step do while for from to else int float input output const chiffre chaine comment_une comment_plsr idf exclamation pnt_virgul deux_pnts virgul par_ouvr par_ferm accolade_ouvr accolade_ferm soustract addition multipl division affect Guillemets inf sup inf_egal sup_egal egal diff corechet_ouvr corechet_ferm
+%token  MainPrgm idf pnt_virgul var BeginPg accolade_ouvr accolade_ferm EndPg let deux_pnts const egal virgul float int entier_pos corechet_ouvr corechet_ferm entier_neg float_pos float_neg affect chaine if then parenthese_fermante parenthese_ouvrante input output add soustract div multipl inf sup inf_ou_egal sup_ou_egal neg and or diff for from to step do while comment_une comment_plsr else reel_pos reel_neg identiq 
+
+%start DEBUT
+
 
 %%
-debut : MainPrgm idf pnt_virgul var declaration BeginPg accolade_ouvr instructions accolade_ferm EndPg pnt_virgul ; 
-declaration : let variables deux_pnts type pnt_virgul;
-variables: idf virgul variables| idf 
-type : float | int |corechet_ouvr type pnt_virgul corechet_ferm
-instructions :
+DEBUT : MainPrgm idf pnt_virgul var DECLARATION BeginPg accolade_ouvr INSTRUCTIONS accolade_ferm EndPg pnt_virgul;
+
+DECLARATION : let VARIABLE1 deux_pnts TYPE1 pnt_virgul | let VARIABLE2 deux_pnts TYPE2 pnt_virgul | const idf deux_pnts TYPE1 egal VALEUR ;
+
+VALEUR: entier_pos | entier_neg | float_pos | float_neg  ;
+
+VARIABLE1: idf virgul VARIABLE1 | idf ;
+
+VARIABLE2 : idf ;
+
+TYPE1 : float | int ;
+
+TYPE2 : corechet_ouvr TYPE1 pnt_virgul entier_pos corechet_ferm pnt_virgul ;
+
+INSTRUCTIONS :  | idf AFFECTATION_NOR INSTRUCTIONS | idf AFFECTATION_TAB INSTRUCTIONS | INPUT INSTRUCTIONS | OUTPUT INSTRUCTIONS | CONDITION INSTRUCTIONS | LOOP_DO INSTRUCTIONS | LOOP_FOR INSTRUCTIONS ;
+
+AFFECTATION_TAB : corechet_ouvr entier_pos corechet_ferm AFFECTATION_NOR ;
+
+AFFECTATION_NOR : affect VALEUR | affect EXPRESSION ;
+
+EXPRESSION : OPERAND OPERATEUR_ARITHM OPERAND ; 
+
+OPERAND : idf | VALEUR ;
+
+OPERATEUR_ARITHM : add | soustract | div | multipl 
+
+INPUT : input parenthese_ouvrante idf parenthese_fermante pnt_virgul ;
+
+OUTPUT : output parenthese_ouvrante DANS_OUTPUT parenthese_fermante pnt_virgul ;
+
+DANS_OUTPUT: chaine | idf | chaine virgul DANS_OUTPUT | idf virgul DANS_OUTPUT ;
+
+CONDITION : if parenthese_ouvrante EXPRESSION_COND parenthese_fermante then accolade_ouvr INSTRUCTIONS SINON ;
+
+SINON : accolade_ferm | 
+
+EXPRESSION_COND : OPERAND OPERATEUR_COND OPERAND | neg OPERAND OPERATEUR_COND OPERAND | EXPRESSION_COND and EXPRESSION_COND | EXPRESSION_COND or EXPRESSION_COND ;   
+
+OPERATEUR_COND : inf | sup | inf_ou_egal | sup_ou_egal | identiq | diff ;
+
+LOOP_DO : do accolade_ouvr INSTRUCTIONS accolade_ferm while EXPRESSION_COND pnt_virgul ;
+
+LOOP_FOR : for idf from entier_pos to entier_pos step entier_pos accolade_ouvr INSTRUCTIONS accolade_ferm ;
+
+
 
 %%
 int main() {
     yyparse();
-    return 0;
+
 }
 yywrap()
 {}
 int yyerror(char *msg)
-{ printf(" Erreur syntaxique");
-return 1;
+{ 
+    printf(" Erreur syntaxique a la ligne %s " , num_de_lignes);
 }
