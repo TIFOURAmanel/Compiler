@@ -7,17 +7,8 @@ Terminals unused in grammar
 
 
 État 10conflits: 1 décalage/réduction
-État 34conflits: 6 décalage/réduction
-État 35conflits: 6 décalage/réduction
-État 36conflits: 6 décalage/réduction
-État 37conflits: 6 décalage/réduction
-État 38conflits: 6 décalage/réduction
-État 45conflits: 6 décalage/réduction
-État 46conflits: 6 décalage/réduction
-État 115conflits: 2 décalage/réduction
-État 116conflits: 2 décalage/réduction
-État 125conflits: 6 décalage/réduction
-État 128conflits: 1 décalage/réduction
+État 68conflits: 6 réduction/réduction
+État 113conflits: 4 décalage/réduction
 
 
 Grammaire
@@ -28,7 +19,7 @@ Grammaire
 
     2 DECLARATION: let VARIABLE1 deux_pnts TYPE1 pnt_virgul
     3            | let idf deux_pnts TYPE2 pnt_virgul
-    4            | const idf deux_pnts TYPE1 egal VALEUR
+    4            | constante idf deux_pnts TYPE1 egal VALEUR
 
     5 VALEUR: entier_pos
     6       | entier_neg
@@ -38,8 +29,8 @@ Grammaire
     9 VARIABLE1: idf virgul VARIABLE1
    10          | idf
 
-   11 TYPE1: float
-   12      | int
+   11 TYPE1: reel
+   12      | entier
 
    13 TYPE2: corechet_ouvr TYPE1 pnt_virgul entier_pos corechet_ferm pnt_virgul
 
@@ -54,48 +45,50 @@ Grammaire
 
    22 AFFECTATION_TAB: corechet_ouvr entier_pos corechet_ferm AFFECTATION_NOR
 
-   23 AFFECTATION_NOR: affect VALEUR pnt_virgul
-   24                | affect EXPRESSION pnt_virgul
+   23 AFFECTATION_NOR: affect EXPRESSION pnt_virgul
 
-   25 EXPRESSION: OPERAND OPERATEUR_ARITHM OPERAND
+   24 EXPRESSION: parenthese_ouvr EXPRESSION parenthese_ferm
+   25           | EXPRESSION OPERATEUR_ARITHM EXPRESSION
+   26           | OPERAND
+   27           | VALEUR
 
-   26 OPERAND: idf
-   27        | VALEUR
+   28 OPERAND: idf
+   29        | VALEUR
+   30        | neg OPERAND
 
-   28 OPERATEUR_ARITHM: add
-   29                 | soustract
-   30                 | div
-   31                 | multipl
+   31 OPERATEUR_ARITHM: add
+   32                 | soustract
+   33                 | division
+   34                 | multipl
 
-   32 INPUT: input parenthese_ouvrante idf parenthese_fermante pnt_virgul
+   35 INPUT: lire parenthese_ouvr idf parenthese_ferm pnt_virgul
 
-   33 OUTPUT: output parenthese_ouvrante DANS_OUTPUT parenthese_fermante pnt_virgul
+   36 OUTPUT: output parenthese_ouvr DANS_OUTPUT parenthese_ferm pnt_virgul
 
-   34 DANS_OUTPUT: chaine
-   35            | idf
-   36            | chaine virgul DANS_OUTPUT
-   37            | idf virgul DANS_OUTPUT
+   37 DANS_OUTPUT: chaine
+   38            | idf
+   39            | chaine virgul DANS_OUTPUT
+   40            | idf virgul DANS_OUTPUT
 
-   38 CONDITION: if parenthese_ouvrante EXPRESSION_COND parenthese_fermante then accolade_ouvr INSTRUCTIONS SINON
+   41 CONDITION: if_cond parenthese_ouvr EXPRESSION_COND parenthese_ferm then accolade_ouvr INSTRUCTIONS accolade_ferm SINON
 
-   39 SINON: else accolade_ouvr INSTRUCTIONS accolade_ferm
-   40      | /* vide */
+   42 SINON: else_cond accolade_ouvr INSTRUCTIONS accolade_ferm
+   43      | /* vide */
 
-   41 EXPRESSION_COND: OPERAND OPERATEUR_COND OPERAND
-   42                | neg OPERAND OPERATEUR_COND OPERAND
-   43                | EXPRESSION_COND and EXPRESSION_COND
-   44                | EXPRESSION_COND or EXPRESSION_COND
+   44 EXPRESSION_COND: OPERAND OPERATEUR_COND OPERAND
+   45                | EXPRESSION_COND and EXPRESSION_COND
+   46                | EXPRESSION_COND or EXPRESSION_COND
 
-   45 OPERATEUR_COND: inf
-   46               | sup
-   47               | inf_ou_egal
-   48               | sup_ou_egal
-   49               | identiq
-   50               | diff
+   47 OPERATEUR_COND: inf
+   48               | sup
+   49               | inf_ou_egal
+   50               | sup_ou_egal
+   51               | identiq
+   52               | diff
 
-   51 LOOP_DO: do accolade_ouvr INSTRUCTIONS accolade_ferm while EXPRESSION_COND pnt_virgul
+   53 LOOP_DO: boucle_do accolade_ouvr INSTRUCTIONS accolade_ferm boucle_while parenthese_ouvr EXPRESSION_COND parenthese_ferm pnt_virgul
 
-   52 LOOP_FOR: for idf from entier_pos to entier_pos step entier_pos accolade_ouvr INSTRUCTIONS accolade_ferm
+   54 LOOP_FOR: boucle_for idf from entier_pos to entier_pos step entier_pos accolade_ouvr INSTRUCTIONS accolade_ferm
 
 
 Terminaux, suivis des règles où ils apparaissent
@@ -103,58 +96,58 @@ Terminaux, suivis des règles où ils apparaissent
 $end (0) 0
 error (256)
 MainPrgm (258) 1
-idf (259) 1 3 4 9 10 15 16 26 32 35 37 52
-pnt_virgul (260) 1 2 3 13 23 24 32 33 51
+idf (259) 1 3 4 9 10 15 16 28 35 38 40 54
+pnt_virgul (260) 1 2 3 13 23 35 36 53
 var (261) 1
 BeginPg (262) 1
-accolade_ouvr (263) 1 38 39 51 52
-accolade_ferm (264) 1 39 51 52
+accolade_ouvr (263) 1 41 42 53 54
+accolade_ferm (264) 1 41 42 53 54
 EndPg (265) 1
 let (266) 2 3
 deux_pnts (267) 2 3 4
-const (268) 4
+constante (268) 4
 egal (269) 4
-virgul (270) 9 36 37
-float (271) 11
-int (272) 12
-entier_pos (273) 5 13 22 52
+virgul (270) 9 39 40
+reel (271) 11
+entier (272) 12
+entier_pos (273) 5 13 22 54
 corechet_ouvr (274) 13 22
 corechet_ferm (275) 13 22
 entier_neg (276) 6
 float_pos (277) 7
 float_neg (278) 8
-affect (279) 23 24
-chaine (280) 34 36
-if (281) 38
-then (282) 38
-parenthese_fermante (283) 32 33 38
-parenthese_ouvrante (284) 32 33 38
-input (285) 32
-output (286) 33
-add (287) 28
-soustract (288) 29
-div (289) 30
-multipl (290) 31
-inf (291) 45
-sup (292) 46
-inf_ou_egal (293) 47
-sup_ou_egal (294) 48
-neg (295) 42
-and (296) 43
-or (297) 44
-diff (298) 50
-for (299) 52
-from (300) 52
-to (301) 52
-step (302) 52
-do (303) 51
-while (304) 51
+affect (279) 23
+chaine (280) 37 39
+if_cond (281) 41
+then (282) 41
+parenthese_ferm (283) 24 35 36 41 53
+parenthese_ouvr (284) 24 35 36 41 53
+lire (285) 35
+output (286) 36
+add (287) 31
+soustract (288) 32
+division (289) 33
+multipl (290) 34
+inf (291) 47
+sup (292) 48
+inf_ou_egal (293) 49
+sup_ou_egal (294) 50
+neg (295) 30
+and (296) 45
+or (297) 46
+diff (298) 52
+boucle_for (299) 54
+from (300) 54
+to (301) 54
+step (302) 54
+boucle_do (303) 53
+boucle_while (304) 53
 comment_une (305)
 comment_plsr (306)
-else (307) 39
+else_cond (307) 42
 reel_pos (308)
 reel_neg (309)
-identiq (310) 49
+identiq (310) 51
 
 
 Non-terminaux, suivis des règles où ils apparaissent
@@ -166,7 +159,7 @@ DEBUT (57)
 DECLARATION (58)
     à gauche: 2 3 4, à droite: 1
 VALEUR (59)
-    à gauche: 5 6 7 8, à droite: 4 23 27
+    à gauche: 5 6 7 8, à droite: 4 27 29
 VARIABLE1 (60)
     à gauche: 9 10, à droite: 2 9
 TYPE1 (61)
@@ -175,35 +168,35 @@ TYPE2 (62)
     à gauche: 13, à droite: 3
 INSTRUCTIONS (63)
     à gauche: 14 15 16 17 18 19 20 21, à droite: 1 15 16 17 18 19 20
-    21 38 39 51 52
+    21 41 42 53 54
 AFFECTATION_TAB (64)
     à gauche: 22, à droite: 16
 AFFECTATION_NOR (65)
-    à gauche: 23 24, à droite: 15 22
+    à gauche: 23, à droite: 15 22
 EXPRESSION (66)
-    à gauche: 25, à droite: 24
+    à gauche: 24 25 26 27, à droite: 23 24 25
 OPERAND (67)
-    à gauche: 26 27, à droite: 25 41 42
+    à gauche: 28 29 30, à droite: 26 30 44
 OPERATEUR_ARITHM (68)
-    à gauche: 28 29 30 31, à droite: 25
+    à gauche: 31 32 33 34, à droite: 25
 INPUT (69)
-    à gauche: 32, à droite: 17
+    à gauche: 35, à droite: 17
 OUTPUT (70)
-    à gauche: 33, à droite: 18
+    à gauche: 36, à droite: 18
 DANS_OUTPUT (71)
-    à gauche: 34 35 36 37, à droite: 33 36 37
+    à gauche: 37 38 39 40, à droite: 36 39 40
 CONDITION (72)
-    à gauche: 38, à droite: 19
+    à gauche: 41, à droite: 19
 SINON (73)
-    à gauche: 39 40, à droite: 38
+    à gauche: 42 43, à droite: 41
 EXPRESSION_COND (74)
-    à gauche: 41 42 43 44, à droite: 38 43 44 51
+    à gauche: 44 45 46, à droite: 41 45 46 53
 OPERATEUR_COND (75)
-    à gauche: 45 46 47 48 49 50, à droite: 41 42
+    à gauche: 47 48 49 50 51 52, à droite: 44
 LOOP_DO (76)
-    à gauche: 51, à droite: 20
+    à gauche: 53, à droite: 20
 LOOP_FOR (77)
-    à gauche: 52, à droite: 21
+    à gauche: 54, à droite: 21
 
 
 état 0
@@ -254,8 +247,8 @@ LOOP_FOR (77)
 
     1 DEBUT: MainPrgm idf pnt_virgul var . DECLARATION BeginPg accolade_ouvr INSTRUCTIONS accolade_ferm EndPg pnt_virgul
 
-    let    décalage et aller à l'état 7
-    const  décalage et aller à l'état 8
+    let        décalage et aller à l'état 7
+    constante  décalage et aller à l'état 8
 
     DECLARATION  aller à l'état 9
 
@@ -272,7 +265,7 @@ LOOP_FOR (77)
 
 état 8
 
-    4 DECLARATION: const . idf deux_pnts TYPE1 egal VALEUR
+    4 DECLARATION: constante . idf deux_pnts TYPE1 egal VALEUR
 
     idf  décalage et aller à l'état 12
 
@@ -305,7 +298,7 @@ LOOP_FOR (77)
 
 état 12
 
-    4 DECLARATION: const idf . deux_pnts TYPE1 egal VALEUR
+    4 DECLARATION: constante idf . deux_pnts TYPE1 egal VALEUR
 
     deux_pnts  décalage et aller à l'état 17
 
@@ -339,18 +332,18 @@ LOOP_FOR (77)
 
     2 DECLARATION: let VARIABLE1 deux_pnts . TYPE1 pnt_virgul
 
-    float  décalage et aller à l'état 23
-    int    décalage et aller à l'état 24
+    reel    décalage et aller à l'état 23
+    entier  décalage et aller à l'état 24
 
     TYPE1  aller à l'état 25
 
 
 état 17
 
-    4 DECLARATION: const idf deux_pnts . TYPE1 egal VALEUR
+    4 DECLARATION: constante idf deux_pnts . TYPE1 egal VALEUR
 
-    float  décalage et aller à l'état 23
-    int    décalage et aller à l'état 24
+    reel    décalage et aller à l'état 23
+    entier  décalage et aller à l'état 24
 
     TYPE1  aller à l'état 26
 
@@ -359,12 +352,12 @@ LOOP_FOR (77)
 
     1 DEBUT: MainPrgm idf pnt_virgul var DECLARATION BeginPg accolade_ouvr . INSTRUCTIONS accolade_ferm EndPg pnt_virgul
 
-    idf     décalage et aller à l'état 27
-    if      décalage et aller à l'état 28
-    input   décalage et aller à l'état 29
-    output  décalage et aller à l'état 30
-    for     décalage et aller à l'état 31
-    do      décalage et aller à l'état 32
+    idf         décalage et aller à l'état 27
+    if_cond     décalage et aller à l'état 28
+    lire        décalage et aller à l'état 29
+    output      décalage et aller à l'état 30
+    boucle_for  décalage et aller à l'état 31
+    boucle_do   décalage et aller à l'état 32
 
     $défaut  réduction par utilisation de la règle 14 (INSTRUCTIONS)
 
@@ -380,8 +373,8 @@ LOOP_FOR (77)
 
    13 TYPE2: corechet_ouvr . TYPE1 pnt_virgul entier_pos corechet_ferm pnt_virgul
 
-    float  décalage et aller à l'état 23
-    int    décalage et aller à l'état 24
+    reel    décalage et aller à l'état 23
+    entier  décalage et aller à l'état 24
 
     TYPE1  aller à l'état 39
 
@@ -412,14 +405,14 @@ LOOP_FOR (77)
 
 état 23
 
-   11 TYPE1: float .
+   11 TYPE1: reel .
 
     $défaut  réduction par utilisation de la règle 11 (TYPE1)
 
 
 état 24
 
-   12 TYPE1: int .
+   12 TYPE1: entier .
 
     $défaut  réduction par utilisation de la règle 12 (TYPE1)
 
@@ -433,7 +426,7 @@ LOOP_FOR (77)
 
 état 26
 
-    4 DECLARATION: const idf deux_pnts TYPE1 . egal VALEUR
+    4 DECLARATION: constante idf deux_pnts TYPE1 . egal VALEUR
 
     egal  décalage et aller à l'état 42
 
@@ -452,35 +445,35 @@ LOOP_FOR (77)
 
 état 28
 
-   38 CONDITION: if . parenthese_ouvrante EXPRESSION_COND parenthese_fermante then accolade_ouvr INSTRUCTIONS SINON
+   41 CONDITION: if_cond . parenthese_ouvr EXPRESSION_COND parenthese_ferm then accolade_ouvr INSTRUCTIONS accolade_ferm SINON
 
-    parenthese_ouvrante  décalage et aller à l'état 47
+    parenthese_ouvr  décalage et aller à l'état 47
 
 
 état 29
 
-   32 INPUT: input . parenthese_ouvrante idf parenthese_fermante pnt_virgul
+   35 INPUT: lire . parenthese_ouvr idf parenthese_ferm pnt_virgul
 
-    parenthese_ouvrante  décalage et aller à l'état 48
+    parenthese_ouvr  décalage et aller à l'état 48
 
 
 état 30
 
-   33 OUTPUT: output . parenthese_ouvrante DANS_OUTPUT parenthese_fermante pnt_virgul
+   36 OUTPUT: output . parenthese_ouvr DANS_OUTPUT parenthese_ferm pnt_virgul
 
-    parenthese_ouvrante  décalage et aller à l'état 49
+    parenthese_ouvr  décalage et aller à l'état 49
 
 
 état 31
 
-   52 LOOP_FOR: for . idf from entier_pos to entier_pos step entier_pos accolade_ouvr INSTRUCTIONS accolade_ferm
+   54 LOOP_FOR: boucle_for . idf from entier_pos to entier_pos step entier_pos accolade_ouvr INSTRUCTIONS accolade_ferm
 
     idf  décalage et aller à l'état 50
 
 
 état 32
 
-   51 LOOP_DO: do . accolade_ouvr INSTRUCTIONS accolade_ferm while EXPRESSION_COND pnt_virgul
+   53 LOOP_DO: boucle_do . accolade_ouvr INSTRUCTIONS accolade_ferm boucle_while parenthese_ouvr EXPRESSION_COND parenthese_ferm pnt_virgul
 
     accolade_ouvr  décalage et aller à l'état 51
 
@@ -496,19 +489,13 @@ LOOP_FOR (77)
 
    17 INSTRUCTIONS: INPUT . INSTRUCTIONS
 
-    idf     décalage et aller à l'état 27
-    if      décalage et aller à l'état 28
-    input   décalage et aller à l'état 29
-    output  décalage et aller à l'état 30
-    for     décalage et aller à l'état 31
-    do      décalage et aller à l'état 32
+    idf         décalage et aller à l'état 27
+    if_cond     décalage et aller à l'état 28
+    lire        décalage et aller à l'état 29
+    output      décalage et aller à l'état 30
+    boucle_for  décalage et aller à l'état 31
+    boucle_do   décalage et aller à l'état 32
 
-    idf      [réduction par utilisation de la règle 14 (INSTRUCTIONS)]
-    if       [réduction par utilisation de la règle 14 (INSTRUCTIONS)]
-    input    [réduction par utilisation de la règle 14 (INSTRUCTIONS)]
-    output   [réduction par utilisation de la règle 14 (INSTRUCTIONS)]
-    for      [réduction par utilisation de la règle 14 (INSTRUCTIONS)]
-    do       [réduction par utilisation de la règle 14 (INSTRUCTIONS)]
     $défaut  réduction par utilisation de la règle 14 (INSTRUCTIONS)
 
     INSTRUCTIONS  aller à l'état 53
@@ -523,19 +510,13 @@ LOOP_FOR (77)
 
    18 INSTRUCTIONS: OUTPUT . INSTRUCTIONS
 
-    idf     décalage et aller à l'état 27
-    if      décalage et aller à l'état 28
-    input   décalage et aller à l'état 29
-    output  décalage et aller à l'état 30
-    for     décalage et aller à l'état 31
-    do      décalage et aller à l'état 32
+    idf         décalage et aller à l'état 27
+    if_cond     décalage et aller à l'état 28
+    lire        décalage et aller à l'état 29
+    output      décalage et aller à l'état 30
+    boucle_for  décalage et aller à l'état 31
+    boucle_do   décalage et aller à l'état 32
 
-    idf      [réduction par utilisation de la règle 14 (INSTRUCTIONS)]
-    if       [réduction par utilisation de la règle 14 (INSTRUCTIONS)]
-    input    [réduction par utilisation de la règle 14 (INSTRUCTIONS)]
-    output   [réduction par utilisation de la règle 14 (INSTRUCTIONS)]
-    for      [réduction par utilisation de la règle 14 (INSTRUCTIONS)]
-    do       [réduction par utilisation de la règle 14 (INSTRUCTIONS)]
     $défaut  réduction par utilisation de la règle 14 (INSTRUCTIONS)
 
     INSTRUCTIONS  aller à l'état 54
@@ -550,19 +531,13 @@ LOOP_FOR (77)
 
    19 INSTRUCTIONS: CONDITION . INSTRUCTIONS
 
-    idf     décalage et aller à l'état 27
-    if      décalage et aller à l'état 28
-    input   décalage et aller à l'état 29
-    output  décalage et aller à l'état 30
-    for     décalage et aller à l'état 31
-    do      décalage et aller à l'état 32
+    idf         décalage et aller à l'état 27
+    if_cond     décalage et aller à l'état 28
+    lire        décalage et aller à l'état 29
+    output      décalage et aller à l'état 30
+    boucle_for  décalage et aller à l'état 31
+    boucle_do   décalage et aller à l'état 32
 
-    idf      [réduction par utilisation de la règle 14 (INSTRUCTIONS)]
-    if       [réduction par utilisation de la règle 14 (INSTRUCTIONS)]
-    input    [réduction par utilisation de la règle 14 (INSTRUCTIONS)]
-    output   [réduction par utilisation de la règle 14 (INSTRUCTIONS)]
-    for      [réduction par utilisation de la règle 14 (INSTRUCTIONS)]
-    do       [réduction par utilisation de la règle 14 (INSTRUCTIONS)]
     $défaut  réduction par utilisation de la règle 14 (INSTRUCTIONS)
 
     INSTRUCTIONS  aller à l'état 55
@@ -577,19 +552,13 @@ LOOP_FOR (77)
 
    20 INSTRUCTIONS: LOOP_DO . INSTRUCTIONS
 
-    idf     décalage et aller à l'état 27
-    if      décalage et aller à l'état 28
-    input   décalage et aller à l'état 29
-    output  décalage et aller à l'état 30
-    for     décalage et aller à l'état 31
-    do      décalage et aller à l'état 32
+    idf         décalage et aller à l'état 27
+    if_cond     décalage et aller à l'état 28
+    lire        décalage et aller à l'état 29
+    output      décalage et aller à l'état 30
+    boucle_for  décalage et aller à l'état 31
+    boucle_do   décalage et aller à l'état 32
 
-    idf      [réduction par utilisation de la règle 14 (INSTRUCTIONS)]
-    if       [réduction par utilisation de la règle 14 (INSTRUCTIONS)]
-    input    [réduction par utilisation de la règle 14 (INSTRUCTIONS)]
-    output   [réduction par utilisation de la règle 14 (INSTRUCTIONS)]
-    for      [réduction par utilisation de la règle 14 (INSTRUCTIONS)]
-    do       [réduction par utilisation de la règle 14 (INSTRUCTIONS)]
     $défaut  réduction par utilisation de la règle 14 (INSTRUCTIONS)
 
     INSTRUCTIONS  aller à l'état 56
@@ -604,19 +573,13 @@ LOOP_FOR (77)
 
    21 INSTRUCTIONS: LOOP_FOR . INSTRUCTIONS
 
-    idf     décalage et aller à l'état 27
-    if      décalage et aller à l'état 28
-    input   décalage et aller à l'état 29
-    output  décalage et aller à l'état 30
-    for     décalage et aller à l'état 31
-    do      décalage et aller à l'état 32
+    idf         décalage et aller à l'état 27
+    if_cond     décalage et aller à l'état 28
+    lire        décalage et aller à l'état 29
+    output      décalage et aller à l'état 30
+    boucle_for  décalage et aller à l'état 31
+    boucle_do   décalage et aller à l'état 32
 
-    idf      [réduction par utilisation de la règle 14 (INSTRUCTIONS)]
-    if       [réduction par utilisation de la règle 14 (INSTRUCTIONS)]
-    input    [réduction par utilisation de la règle 14 (INSTRUCTIONS)]
-    output   [réduction par utilisation de la règle 14 (INSTRUCTIONS)]
-    for      [réduction par utilisation de la règle 14 (INSTRUCTIONS)]
-    do       [réduction par utilisation de la règle 14 (INSTRUCTIONS)]
     $défaut  réduction par utilisation de la règle 14 (INSTRUCTIONS)
 
     INSTRUCTIONS  aller à l'état 57
@@ -650,7 +613,7 @@ LOOP_FOR (77)
 
 état 42
 
-    4 DECLARATION: const idf deux_pnts TYPE1 egal . VALEUR
+    4 DECLARATION: constante idf deux_pnts TYPE1 egal . VALEUR
 
     entier_pos  décalage et aller à l'état 59
     entier_neg  décalage et aller à l'état 60
@@ -669,40 +632,35 @@ LOOP_FOR (77)
 
 état 44
 
-   23 AFFECTATION_NOR: affect . VALEUR pnt_virgul
-   24                | affect . EXPRESSION pnt_virgul
+   23 AFFECTATION_NOR: affect . EXPRESSION pnt_virgul
 
-    idf         décalage et aller à l'état 65
-    entier_pos  décalage et aller à l'état 59
-    entier_neg  décalage et aller à l'état 60
-    float_pos   décalage et aller à l'état 61
-    float_neg   décalage et aller à l'état 62
+    idf              décalage et aller à l'état 65
+    entier_pos       décalage et aller à l'état 59
+    entier_neg       décalage et aller à l'état 60
+    float_pos        décalage et aller à l'état 61
+    float_neg        décalage et aller à l'état 62
+    parenthese_ouvr  décalage et aller à l'état 66
+    neg              décalage et aller à l'état 67
 
-    VALEUR      aller à l'état 66
-    EXPRESSION  aller à l'état 67
-    OPERAND     aller à l'état 68
+    VALEUR      aller à l'état 68
+    EXPRESSION  aller à l'état 69
+    OPERAND     aller à l'état 70
 
 
 état 45
 
    16 INSTRUCTIONS: idf AFFECTATION_TAB . INSTRUCTIONS
 
-    idf     décalage et aller à l'état 27
-    if      décalage et aller à l'état 28
-    input   décalage et aller à l'état 29
-    output  décalage et aller à l'état 30
-    for     décalage et aller à l'état 31
-    do      décalage et aller à l'état 32
+    idf         décalage et aller à l'état 27
+    if_cond     décalage et aller à l'état 28
+    lire        décalage et aller à l'état 29
+    output      décalage et aller à l'état 30
+    boucle_for  décalage et aller à l'état 31
+    boucle_do   décalage et aller à l'état 32
 
-    idf      [réduction par utilisation de la règle 14 (INSTRUCTIONS)]
-    if       [réduction par utilisation de la règle 14 (INSTRUCTIONS)]
-    input    [réduction par utilisation de la règle 14 (INSTRUCTIONS)]
-    output   [réduction par utilisation de la règle 14 (INSTRUCTIONS)]
-    for      [réduction par utilisation de la règle 14 (INSTRUCTIONS)]
-    do       [réduction par utilisation de la règle 14 (INSTRUCTIONS)]
     $défaut  réduction par utilisation de la règle 14 (INSTRUCTIONS)
 
-    INSTRUCTIONS  aller à l'état 69
+    INSTRUCTIONS  aller à l'état 71
     INPUT         aller à l'état 34
     OUTPUT        aller à l'état 35
     CONDITION     aller à l'état 36
@@ -714,22 +672,16 @@ LOOP_FOR (77)
 
    15 INSTRUCTIONS: idf AFFECTATION_NOR . INSTRUCTIONS
 
-    idf     décalage et aller à l'état 27
-    if      décalage et aller à l'état 28
-    input   décalage et aller à l'état 29
-    output  décalage et aller à l'état 30
-    for     décalage et aller à l'état 31
-    do      décalage et aller à l'état 32
+    idf         décalage et aller à l'état 27
+    if_cond     décalage et aller à l'état 28
+    lire        décalage et aller à l'état 29
+    output      décalage et aller à l'état 30
+    boucle_for  décalage et aller à l'état 31
+    boucle_do   décalage et aller à l'état 32
 
-    idf      [réduction par utilisation de la règle 14 (INSTRUCTIONS)]
-    if       [réduction par utilisation de la règle 14 (INSTRUCTIONS)]
-    input    [réduction par utilisation de la règle 14 (INSTRUCTIONS)]
-    output   [réduction par utilisation de la règle 14 (INSTRUCTIONS)]
-    for      [réduction par utilisation de la règle 14 (INSTRUCTIONS)]
-    do       [réduction par utilisation de la règle 14 (INSTRUCTIONS)]
     $défaut  réduction par utilisation de la règle 14 (INSTRUCTIONS)
 
-    INSTRUCTIONS  aller à l'état 70
+    INSTRUCTIONS  aller à l'état 72
     INPUT         aller à l'état 34
     OUTPUT        aller à l'état 35
     CONDITION     aller à l'état 36
@@ -739,58 +691,58 @@ LOOP_FOR (77)
 
 état 47
 
-   38 CONDITION: if parenthese_ouvrante . EXPRESSION_COND parenthese_fermante then accolade_ouvr INSTRUCTIONS SINON
+   41 CONDITION: if_cond parenthese_ouvr . EXPRESSION_COND parenthese_ferm then accolade_ouvr INSTRUCTIONS accolade_ferm SINON
 
     idf         décalage et aller à l'état 65
     entier_pos  décalage et aller à l'état 59
     entier_neg  décalage et aller à l'état 60
     float_pos   décalage et aller à l'état 61
     float_neg   décalage et aller à l'état 62
-    neg         décalage et aller à l'état 71
+    neg         décalage et aller à l'état 67
 
-    VALEUR           aller à l'état 72
-    OPERAND          aller à l'état 73
-    EXPRESSION_COND  aller à l'état 74
+    VALEUR           aller à l'état 73
+    OPERAND          aller à l'état 74
+    EXPRESSION_COND  aller à l'état 75
 
 
 état 48
 
-   32 INPUT: input parenthese_ouvrante . idf parenthese_fermante pnt_virgul
+   35 INPUT: lire parenthese_ouvr . idf parenthese_ferm pnt_virgul
 
-    idf  décalage et aller à l'état 75
+    idf  décalage et aller à l'état 76
 
 
 état 49
 
-   33 OUTPUT: output parenthese_ouvrante . DANS_OUTPUT parenthese_fermante pnt_virgul
+   36 OUTPUT: output parenthese_ouvr . DANS_OUTPUT parenthese_ferm pnt_virgul
 
-    idf     décalage et aller à l'état 76
-    chaine  décalage et aller à l'état 77
+    idf     décalage et aller à l'état 77
+    chaine  décalage et aller à l'état 78
 
-    DANS_OUTPUT  aller à l'état 78
+    DANS_OUTPUT  aller à l'état 79
 
 
 état 50
 
-   52 LOOP_FOR: for idf . from entier_pos to entier_pos step entier_pos accolade_ouvr INSTRUCTIONS accolade_ferm
+   54 LOOP_FOR: boucle_for idf . from entier_pos to entier_pos step entier_pos accolade_ouvr INSTRUCTIONS accolade_ferm
 
-    from  décalage et aller à l'état 79
+    from  décalage et aller à l'état 80
 
 
 état 51
 
-   51 LOOP_DO: do accolade_ouvr . INSTRUCTIONS accolade_ferm while EXPRESSION_COND pnt_virgul
+   53 LOOP_DO: boucle_do accolade_ouvr . INSTRUCTIONS accolade_ferm boucle_while parenthese_ouvr EXPRESSION_COND parenthese_ferm pnt_virgul
 
-    idf     décalage et aller à l'état 27
-    if      décalage et aller à l'état 28
-    input   décalage et aller à l'état 29
-    output  décalage et aller à l'état 30
-    for     décalage et aller à l'état 31
-    do      décalage et aller à l'état 32
+    idf         décalage et aller à l'état 27
+    if_cond     décalage et aller à l'état 28
+    lire        décalage et aller à l'état 29
+    output      décalage et aller à l'état 30
+    boucle_for  décalage et aller à l'état 31
+    boucle_do   décalage et aller à l'état 32
 
     $défaut  réduction par utilisation de la règle 14 (INSTRUCTIONS)
 
-    INSTRUCTIONS  aller à l'état 80
+    INSTRUCTIONS  aller à l'état 81
     INPUT         aller à l'état 34
     OUTPUT        aller à l'état 35
     CONDITION     aller à l'état 36
@@ -802,7 +754,7 @@ LOOP_FOR (77)
 
     1 DEBUT: MainPrgm idf pnt_virgul var DECLARATION BeginPg accolade_ouvr INSTRUCTIONS accolade_ferm . EndPg pnt_virgul
 
-    EndPg  décalage et aller à l'état 81
+    EndPg  décalage et aller à l'état 82
 
 
 état 53
@@ -844,7 +796,7 @@ LOOP_FOR (77)
 
    13 TYPE2: corechet_ouvr TYPE1 pnt_virgul . entier_pos corechet_ferm pnt_virgul
 
-    entier_pos  décalage et aller à l'état 82
+    entier_pos  décalage et aller à l'état 83
 
 
 état 59
@@ -877,7 +829,7 @@ LOOP_FOR (77)
 
 état 63
 
-    4 DECLARATION: const idf deux_pnts TYPE1 egal VALEUR .
+    4 DECLARATION: constante idf deux_pnts TYPE1 egal VALEUR .
 
     $défaut  réduction par utilisation de la règle 4 (DECLARATION)
 
@@ -886,555 +838,564 @@ LOOP_FOR (77)
 
    22 AFFECTATION_TAB: corechet_ouvr entier_pos . corechet_ferm AFFECTATION_NOR
 
-    corechet_ferm  décalage et aller à l'état 83
+    corechet_ferm  décalage et aller à l'état 84
 
 
 état 65
 
-   26 OPERAND: idf .
+   28 OPERAND: idf .
 
-    $défaut  réduction par utilisation de la règle 26 (OPERAND)
+    $défaut  réduction par utilisation de la règle 28 (OPERAND)
 
 
 état 66
 
-   23 AFFECTATION_NOR: affect VALEUR . pnt_virgul
-   27 OPERAND: VALEUR .
+   24 EXPRESSION: parenthese_ouvr . EXPRESSION parenthese_ferm
 
-    pnt_virgul  décalage et aller à l'état 84
+    idf              décalage et aller à l'état 65
+    entier_pos       décalage et aller à l'état 59
+    entier_neg       décalage et aller à l'état 60
+    float_pos        décalage et aller à l'état 61
+    float_neg        décalage et aller à l'état 62
+    parenthese_ouvr  décalage et aller à l'état 66
+    neg              décalage et aller à l'état 67
 
-    $défaut  réduction par utilisation de la règle 27 (OPERAND)
+    VALEUR      aller à l'état 68
+    EXPRESSION  aller à l'état 85
+    OPERAND     aller à l'état 70
 
 
 état 67
 
-   24 AFFECTATION_NOR: affect EXPRESSION . pnt_virgul
+   30 OPERAND: neg . OPERAND
 
-    pnt_virgul  décalage et aller à l'état 85
+    idf         décalage et aller à l'état 65
+    entier_pos  décalage et aller à l'état 59
+    entier_neg  décalage et aller à l'état 60
+    float_pos   décalage et aller à l'état 61
+    float_neg   décalage et aller à l'état 62
+    neg         décalage et aller à l'état 67
+
+    VALEUR   aller à l'état 73
+    OPERAND  aller à l'état 86
 
 
 état 68
 
-   25 EXPRESSION: OPERAND . OPERATEUR_ARITHM OPERAND
+   27 EXPRESSION: VALEUR .
+   29 OPERAND: VALEUR .
 
-    add        décalage et aller à l'état 86
-    soustract  décalage et aller à l'état 87
-    div        décalage et aller à l'état 88
-    multipl    décalage et aller à l'état 89
-
-    OPERATEUR_ARITHM  aller à l'état 90
+    pnt_virgul       réduction par utilisation de la règle 27 (EXPRESSION)
+    pnt_virgul       [réduction par utilisation de la règle 29 (OPERAND)]
+    parenthese_ferm  réduction par utilisation de la règle 27 (EXPRESSION)
+    parenthese_ferm  [réduction par utilisation de la règle 29 (OPERAND)]
+    add              réduction par utilisation de la règle 27 (EXPRESSION)
+    add              [réduction par utilisation de la règle 29 (OPERAND)]
+    soustract        réduction par utilisation de la règle 27 (EXPRESSION)
+    soustract        [réduction par utilisation de la règle 29 (OPERAND)]
+    division         réduction par utilisation de la règle 27 (EXPRESSION)
+    division         [réduction par utilisation de la règle 29 (OPERAND)]
+    multipl          réduction par utilisation de la règle 27 (EXPRESSION)
+    multipl          [réduction par utilisation de la règle 29 (OPERAND)]
+    $défaut          réduction par utilisation de la règle 27 (EXPRESSION)
 
 
 état 69
+
+   23 AFFECTATION_NOR: affect EXPRESSION . pnt_virgul
+   25 EXPRESSION: EXPRESSION . OPERATEUR_ARITHM EXPRESSION
+
+    pnt_virgul  décalage et aller à l'état 87
+    add         décalage et aller à l'état 88
+    soustract   décalage et aller à l'état 89
+    division    décalage et aller à l'état 90
+    multipl     décalage et aller à l'état 91
+
+    OPERATEUR_ARITHM  aller à l'état 92
+
+
+état 70
+
+   26 EXPRESSION: OPERAND .
+
+    $défaut  réduction par utilisation de la règle 26 (EXPRESSION)
+
+
+état 71
 
    16 INSTRUCTIONS: idf AFFECTATION_TAB INSTRUCTIONS .
 
     $défaut  réduction par utilisation de la règle 16 (INSTRUCTIONS)
 
 
-état 70
+état 72
 
    15 INSTRUCTIONS: idf AFFECTATION_NOR INSTRUCTIONS .
 
     $défaut  réduction par utilisation de la règle 15 (INSTRUCTIONS)
 
 
-état 71
-
-   42 EXPRESSION_COND: neg . OPERAND OPERATEUR_COND OPERAND
-
-    idf         décalage et aller à l'état 65
-    entier_pos  décalage et aller à l'état 59
-    entier_neg  décalage et aller à l'état 60
-    float_pos   décalage et aller à l'état 61
-    float_neg   décalage et aller à l'état 62
-
-    VALEUR   aller à l'état 72
-    OPERAND  aller à l'état 91
-
-
-état 72
-
-   27 OPERAND: VALEUR .
-
-    $défaut  réduction par utilisation de la règle 27 (OPERAND)
-
-
 état 73
 
-   41 EXPRESSION_COND: OPERAND . OPERATEUR_COND OPERAND
+   29 OPERAND: VALEUR .
 
-    inf          décalage et aller à l'état 92
-    sup          décalage et aller à l'état 93
-    inf_ou_egal  décalage et aller à l'état 94
-    sup_ou_egal  décalage et aller à l'état 95
-    diff         décalage et aller à l'état 96
-    identiq      décalage et aller à l'état 97
-
-    OPERATEUR_COND  aller à l'état 98
+    $défaut  réduction par utilisation de la règle 29 (OPERAND)
 
 
 état 74
 
-   38 CONDITION: if parenthese_ouvrante EXPRESSION_COND . parenthese_fermante then accolade_ouvr INSTRUCTIONS SINON
-   43 EXPRESSION_COND: EXPRESSION_COND . and EXPRESSION_COND
-   44                | EXPRESSION_COND . or EXPRESSION_COND
+   44 EXPRESSION_COND: OPERAND . OPERATEUR_COND OPERAND
 
-    parenthese_fermante  décalage et aller à l'état 99
-    and                  décalage et aller à l'état 100
-    or                   décalage et aller à l'état 101
+    inf          décalage et aller à l'état 93
+    sup          décalage et aller à l'état 94
+    inf_ou_egal  décalage et aller à l'état 95
+    sup_ou_egal  décalage et aller à l'état 96
+    diff         décalage et aller à l'état 97
+    identiq      décalage et aller à l'état 98
+
+    OPERATEUR_COND  aller à l'état 99
 
 
 état 75
 
-   32 INPUT: input parenthese_ouvrante idf . parenthese_fermante pnt_virgul
+   41 CONDITION: if_cond parenthese_ouvr EXPRESSION_COND . parenthese_ferm then accolade_ouvr INSTRUCTIONS accolade_ferm SINON
+   45 EXPRESSION_COND: EXPRESSION_COND . and EXPRESSION_COND
+   46                | EXPRESSION_COND . or EXPRESSION_COND
 
-    parenthese_fermante  décalage et aller à l'état 102
+    parenthese_ferm  décalage et aller à l'état 100
+    and              décalage et aller à l'état 101
+    or               décalage et aller à l'état 102
 
 
 état 76
 
-   35 DANS_OUTPUT: idf .
-   37            | idf . virgul DANS_OUTPUT
+   35 INPUT: lire parenthese_ouvr idf . parenthese_ferm pnt_virgul
 
-    virgul  décalage et aller à l'état 103
-
-    $défaut  réduction par utilisation de la règle 35 (DANS_OUTPUT)
+    parenthese_ferm  décalage et aller à l'état 103
 
 
 état 77
 
-   34 DANS_OUTPUT: chaine .
-   36            | chaine . virgul DANS_OUTPUT
+   38 DANS_OUTPUT: idf .
+   40            | idf . virgul DANS_OUTPUT
 
     virgul  décalage et aller à l'état 104
 
-    $défaut  réduction par utilisation de la règle 34 (DANS_OUTPUT)
+    $défaut  réduction par utilisation de la règle 38 (DANS_OUTPUT)
 
 
 état 78
 
-   33 OUTPUT: output parenthese_ouvrante DANS_OUTPUT . parenthese_fermante pnt_virgul
+   37 DANS_OUTPUT: chaine .
+   39            | chaine . virgul DANS_OUTPUT
 
-    parenthese_fermante  décalage et aller à l'état 105
+    virgul  décalage et aller à l'état 105
+
+    $défaut  réduction par utilisation de la règle 37 (DANS_OUTPUT)
 
 
 état 79
 
-   52 LOOP_FOR: for idf from . entier_pos to entier_pos step entier_pos accolade_ouvr INSTRUCTIONS accolade_ferm
+   36 OUTPUT: output parenthese_ouvr DANS_OUTPUT . parenthese_ferm pnt_virgul
 
-    entier_pos  décalage et aller à l'état 106
+    parenthese_ferm  décalage et aller à l'état 106
 
 
 état 80
 
-   51 LOOP_DO: do accolade_ouvr INSTRUCTIONS . accolade_ferm while EXPRESSION_COND pnt_virgul
+   54 LOOP_FOR: boucle_for idf from . entier_pos to entier_pos step entier_pos accolade_ouvr INSTRUCTIONS accolade_ferm
 
-    accolade_ferm  décalage et aller à l'état 107
+    entier_pos  décalage et aller à l'état 107
 
 
 état 81
 
-    1 DEBUT: MainPrgm idf pnt_virgul var DECLARATION BeginPg accolade_ouvr INSTRUCTIONS accolade_ferm EndPg . pnt_virgul
+   53 LOOP_DO: boucle_do accolade_ouvr INSTRUCTIONS . accolade_ferm boucle_while parenthese_ouvr EXPRESSION_COND parenthese_ferm pnt_virgul
 
-    pnt_virgul  décalage et aller à l'état 108
+    accolade_ferm  décalage et aller à l'état 108
 
 
 état 82
 
-   13 TYPE2: corechet_ouvr TYPE1 pnt_virgul entier_pos . corechet_ferm pnt_virgul
+    1 DEBUT: MainPrgm idf pnt_virgul var DECLARATION BeginPg accolade_ouvr INSTRUCTIONS accolade_ferm EndPg . pnt_virgul
 
-    corechet_ferm  décalage et aller à l'état 109
+    pnt_virgul  décalage et aller à l'état 109
 
 
 état 83
+
+   13 TYPE2: corechet_ouvr TYPE1 pnt_virgul entier_pos . corechet_ferm pnt_virgul
+
+    corechet_ferm  décalage et aller à l'état 110
+
+
+état 84
 
    22 AFFECTATION_TAB: corechet_ouvr entier_pos corechet_ferm . AFFECTATION_NOR
 
     affect  décalage et aller à l'état 44
 
-    AFFECTATION_NOR  aller à l'état 110
-
-
-état 84
-
-   23 AFFECTATION_NOR: affect VALEUR pnt_virgul .
-
-    $défaut  réduction par utilisation de la règle 23 (AFFECTATION_NOR)
+    AFFECTATION_NOR  aller à l'état 111
 
 
 état 85
 
-   24 AFFECTATION_NOR: affect EXPRESSION pnt_virgul .
+   24 EXPRESSION: parenthese_ouvr EXPRESSION . parenthese_ferm
+   25           | EXPRESSION . OPERATEUR_ARITHM EXPRESSION
 
-    $défaut  réduction par utilisation de la règle 24 (AFFECTATION_NOR)
+    parenthese_ferm  décalage et aller à l'état 112
+    add              décalage et aller à l'état 88
+    soustract        décalage et aller à l'état 89
+    division         décalage et aller à l'état 90
+    multipl          décalage et aller à l'état 91
+
+    OPERATEUR_ARITHM  aller à l'état 92
 
 
 état 86
 
-   28 OPERATEUR_ARITHM: add .
+   30 OPERAND: neg OPERAND .
 
-    $défaut  réduction par utilisation de la règle 28 (OPERATEUR_ARITHM)
+    $défaut  réduction par utilisation de la règle 30 (OPERAND)
 
 
 état 87
 
-   29 OPERATEUR_ARITHM: soustract .
+   23 AFFECTATION_NOR: affect EXPRESSION pnt_virgul .
 
-    $défaut  réduction par utilisation de la règle 29 (OPERATEUR_ARITHM)
+    $défaut  réduction par utilisation de la règle 23 (AFFECTATION_NOR)
 
 
 état 88
 
-   30 OPERATEUR_ARITHM: div .
-
-    $défaut  réduction par utilisation de la règle 30 (OPERATEUR_ARITHM)
-
-
-état 89
-
-   31 OPERATEUR_ARITHM: multipl .
+   31 OPERATEUR_ARITHM: add .
 
     $défaut  réduction par utilisation de la règle 31 (OPERATEUR_ARITHM)
 
 
+état 89
+
+   32 OPERATEUR_ARITHM: soustract .
+
+    $défaut  réduction par utilisation de la règle 32 (OPERATEUR_ARITHM)
+
+
 état 90
 
-   25 EXPRESSION: OPERAND OPERATEUR_ARITHM . OPERAND
+   33 OPERATEUR_ARITHM: division .
 
-    idf         décalage et aller à l'état 65
-    entier_pos  décalage et aller à l'état 59
-    entier_neg  décalage et aller à l'état 60
-    float_pos   décalage et aller à l'état 61
-    float_neg   décalage et aller à l'état 62
-
-    VALEUR   aller à l'état 72
-    OPERAND  aller à l'état 111
+    $défaut  réduction par utilisation de la règle 33 (OPERATEUR_ARITHM)
 
 
 état 91
 
-   42 EXPRESSION_COND: neg OPERAND . OPERATEUR_COND OPERAND
+   34 OPERATEUR_ARITHM: multipl .
 
-    inf          décalage et aller à l'état 92
-    sup          décalage et aller à l'état 93
-    inf_ou_egal  décalage et aller à l'état 94
-    sup_ou_egal  décalage et aller à l'état 95
-    diff         décalage et aller à l'état 96
-    identiq      décalage et aller à l'état 97
-
-    OPERATEUR_COND  aller à l'état 112
+    $défaut  réduction par utilisation de la règle 34 (OPERATEUR_ARITHM)
 
 
 état 92
 
-   45 OPERATEUR_COND: inf .
+   25 EXPRESSION: EXPRESSION OPERATEUR_ARITHM . EXPRESSION
 
-    $défaut  réduction par utilisation de la règle 45 (OPERATEUR_COND)
+    idf              décalage et aller à l'état 65
+    entier_pos       décalage et aller à l'état 59
+    entier_neg       décalage et aller à l'état 60
+    float_pos        décalage et aller à l'état 61
+    float_neg        décalage et aller à l'état 62
+    parenthese_ouvr  décalage et aller à l'état 66
+    neg              décalage et aller à l'état 67
+
+    VALEUR      aller à l'état 68
+    EXPRESSION  aller à l'état 113
+    OPERAND     aller à l'état 70
 
 
 état 93
 
-   46 OPERATEUR_COND: sup .
-
-    $défaut  réduction par utilisation de la règle 46 (OPERATEUR_COND)
-
-
-état 94
-
-   47 OPERATEUR_COND: inf_ou_egal .
+   47 OPERATEUR_COND: inf .
 
     $défaut  réduction par utilisation de la règle 47 (OPERATEUR_COND)
 
 
-état 95
+état 94
 
-   48 OPERATEUR_COND: sup_ou_egal .
+   48 OPERATEUR_COND: sup .
 
     $défaut  réduction par utilisation de la règle 48 (OPERATEUR_COND)
 
 
+état 95
+
+   49 OPERATEUR_COND: inf_ou_egal .
+
+    $défaut  réduction par utilisation de la règle 49 (OPERATEUR_COND)
+
+
 état 96
 
-   50 OPERATEUR_COND: diff .
+   50 OPERATEUR_COND: sup_ou_egal .
 
     $défaut  réduction par utilisation de la règle 50 (OPERATEUR_COND)
 
 
 état 97
 
-   49 OPERATEUR_COND: identiq .
+   52 OPERATEUR_COND: diff .
 
-    $défaut  réduction par utilisation de la règle 49 (OPERATEUR_COND)
+    $défaut  réduction par utilisation de la règle 52 (OPERATEUR_COND)
 
 
 état 98
 
-   41 EXPRESSION_COND: OPERAND OPERATEUR_COND . OPERAND
+   51 OPERATEUR_COND: identiq .
 
-    idf         décalage et aller à l'état 65
-    entier_pos  décalage et aller à l'état 59
-    entier_neg  décalage et aller à l'état 60
-    float_pos   décalage et aller à l'état 61
-    float_neg   décalage et aller à l'état 62
-
-    VALEUR   aller à l'état 72
-    OPERAND  aller à l'état 113
+    $défaut  réduction par utilisation de la règle 51 (OPERATEUR_COND)
 
 
 état 99
 
-   38 CONDITION: if parenthese_ouvrante EXPRESSION_COND parenthese_fermante . then accolade_ouvr INSTRUCTIONS SINON
+   44 EXPRESSION_COND: OPERAND OPERATEUR_COND . OPERAND
 
-    then  décalage et aller à l'état 114
+    idf         décalage et aller à l'état 65
+    entier_pos  décalage et aller à l'état 59
+    entier_neg  décalage et aller à l'état 60
+    float_pos   décalage et aller à l'état 61
+    float_neg   décalage et aller à l'état 62
+    neg         décalage et aller à l'état 67
+
+    VALEUR   aller à l'état 73
+    OPERAND  aller à l'état 114
 
 
 état 100
 
-   43 EXPRESSION_COND: EXPRESSION_COND and . EXPRESSION_COND
+   41 CONDITION: if_cond parenthese_ouvr EXPRESSION_COND parenthese_ferm . then accolade_ouvr INSTRUCTIONS accolade_ferm SINON
 
-    idf         décalage et aller à l'état 65
-    entier_pos  décalage et aller à l'état 59
-    entier_neg  décalage et aller à l'état 60
-    float_pos   décalage et aller à l'état 61
-    float_neg   décalage et aller à l'état 62
-    neg         décalage et aller à l'état 71
-
-    VALEUR           aller à l'état 72
-    OPERAND          aller à l'état 73
-    EXPRESSION_COND  aller à l'état 115
+    then  décalage et aller à l'état 115
 
 
 état 101
 
-   44 EXPRESSION_COND: EXPRESSION_COND or . EXPRESSION_COND
+   45 EXPRESSION_COND: EXPRESSION_COND and . EXPRESSION_COND
 
     idf         décalage et aller à l'état 65
     entier_pos  décalage et aller à l'état 59
     entier_neg  décalage et aller à l'état 60
     float_pos   décalage et aller à l'état 61
     float_neg   décalage et aller à l'état 62
-    neg         décalage et aller à l'état 71
+    neg         décalage et aller à l'état 67
 
-    VALEUR           aller à l'état 72
-    OPERAND          aller à l'état 73
+    VALEUR           aller à l'état 73
+    OPERAND          aller à l'état 74
     EXPRESSION_COND  aller à l'état 116
 
 
 état 102
 
-   32 INPUT: input parenthese_ouvrante idf parenthese_fermante . pnt_virgul
+   46 EXPRESSION_COND: EXPRESSION_COND or . EXPRESSION_COND
 
-    pnt_virgul  décalage et aller à l'état 117
+    idf         décalage et aller à l'état 65
+    entier_pos  décalage et aller à l'état 59
+    entier_neg  décalage et aller à l'état 60
+    float_pos   décalage et aller à l'état 61
+    float_neg   décalage et aller à l'état 62
+    neg         décalage et aller à l'état 67
+
+    VALEUR           aller à l'état 73
+    OPERAND          aller à l'état 74
+    EXPRESSION_COND  aller à l'état 117
 
 
 état 103
 
-   37 DANS_OUTPUT: idf virgul . DANS_OUTPUT
+   35 INPUT: lire parenthese_ouvr idf parenthese_ferm . pnt_virgul
 
-    idf     décalage et aller à l'état 76
-    chaine  décalage et aller à l'état 77
-
-    DANS_OUTPUT  aller à l'état 118
+    pnt_virgul  décalage et aller à l'état 118
 
 
 état 104
 
-   36 DANS_OUTPUT: chaine virgul . DANS_OUTPUT
+   40 DANS_OUTPUT: idf virgul . DANS_OUTPUT
 
-    idf     décalage et aller à l'état 76
-    chaine  décalage et aller à l'état 77
+    idf     décalage et aller à l'état 77
+    chaine  décalage et aller à l'état 78
 
     DANS_OUTPUT  aller à l'état 119
 
 
 état 105
 
-   33 OUTPUT: output parenthese_ouvrante DANS_OUTPUT parenthese_fermante . pnt_virgul
+   39 DANS_OUTPUT: chaine virgul . DANS_OUTPUT
 
-    pnt_virgul  décalage et aller à l'état 120
+    idf     décalage et aller à l'état 77
+    chaine  décalage et aller à l'état 78
+
+    DANS_OUTPUT  aller à l'état 120
 
 
 état 106
 
-   52 LOOP_FOR: for idf from entier_pos . to entier_pos step entier_pos accolade_ouvr INSTRUCTIONS accolade_ferm
+   36 OUTPUT: output parenthese_ouvr DANS_OUTPUT parenthese_ferm . pnt_virgul
 
-    to  décalage et aller à l'état 121
+    pnt_virgul  décalage et aller à l'état 121
 
 
 état 107
 
-   51 LOOP_DO: do accolade_ouvr INSTRUCTIONS accolade_ferm . while EXPRESSION_COND pnt_virgul
+   54 LOOP_FOR: boucle_for idf from entier_pos . to entier_pos step entier_pos accolade_ouvr INSTRUCTIONS accolade_ferm
 
-    while  décalage et aller à l'état 122
+    to  décalage et aller à l'état 122
 
 
 état 108
+
+   53 LOOP_DO: boucle_do accolade_ouvr INSTRUCTIONS accolade_ferm . boucle_while parenthese_ouvr EXPRESSION_COND parenthese_ferm pnt_virgul
+
+    boucle_while  décalage et aller à l'état 123
+
+
+état 109
 
     1 DEBUT: MainPrgm idf pnt_virgul var DECLARATION BeginPg accolade_ouvr INSTRUCTIONS accolade_ferm EndPg pnt_virgul .
 
     $défaut  réduction par utilisation de la règle 1 (DEBUT)
 
 
-état 109
+état 110
 
    13 TYPE2: corechet_ouvr TYPE1 pnt_virgul entier_pos corechet_ferm . pnt_virgul
 
-    pnt_virgul  décalage et aller à l'état 123
+    pnt_virgul  décalage et aller à l'état 124
 
 
-état 110
+état 111
 
    22 AFFECTATION_TAB: corechet_ouvr entier_pos corechet_ferm AFFECTATION_NOR .
 
     $défaut  réduction par utilisation de la règle 22 (AFFECTATION_TAB)
 
 
-état 111
-
-   25 EXPRESSION: OPERAND OPERATEUR_ARITHM OPERAND .
-
-    $défaut  réduction par utilisation de la règle 25 (EXPRESSION)
-
-
 état 112
 
-   42 EXPRESSION_COND: neg OPERAND OPERATEUR_COND . OPERAND
+   24 EXPRESSION: parenthese_ouvr EXPRESSION parenthese_ferm .
 
-    idf         décalage et aller à l'état 65
-    entier_pos  décalage et aller à l'état 59
-    entier_neg  décalage et aller à l'état 60
-    float_pos   décalage et aller à l'état 61
-    float_neg   décalage et aller à l'état 62
-
-    VALEUR   aller à l'état 72
-    OPERAND  aller à l'état 124
+    $défaut  réduction par utilisation de la règle 24 (EXPRESSION)
 
 
 état 113
 
-   41 EXPRESSION_COND: OPERAND OPERATEUR_COND OPERAND .
+   25 EXPRESSION: EXPRESSION . OPERATEUR_ARITHM EXPRESSION
+   25           | EXPRESSION OPERATEUR_ARITHM EXPRESSION .
 
-    $défaut  réduction par utilisation de la règle 41 (EXPRESSION_COND)
+    add        décalage et aller à l'état 88
+    soustract  décalage et aller à l'état 89
+    division   décalage et aller à l'état 90
+    multipl    décalage et aller à l'état 91
+
+    add        [réduction par utilisation de la règle 25 (EXPRESSION)]
+    soustract  [réduction par utilisation de la règle 25 (EXPRESSION)]
+    division   [réduction par utilisation de la règle 25 (EXPRESSION)]
+    multipl    [réduction par utilisation de la règle 25 (EXPRESSION)]
+    $défaut    réduction par utilisation de la règle 25 (EXPRESSION)
+
+    OPERATEUR_ARITHM  aller à l'état 92
 
 
 état 114
 
-   38 CONDITION: if parenthese_ouvrante EXPRESSION_COND parenthese_fermante then . accolade_ouvr INSTRUCTIONS SINON
+   44 EXPRESSION_COND: OPERAND OPERATEUR_COND OPERAND .
 
-    accolade_ouvr  décalage et aller à l'état 125
+    $défaut  réduction par utilisation de la règle 44 (EXPRESSION_COND)
 
 
 état 115
 
-   43 EXPRESSION_COND: EXPRESSION_COND . and EXPRESSION_COND
-   43                | EXPRESSION_COND and EXPRESSION_COND .
-   44                | EXPRESSION_COND . or EXPRESSION_COND
+   41 CONDITION: if_cond parenthese_ouvr EXPRESSION_COND parenthese_ferm then . accolade_ouvr INSTRUCTIONS accolade_ferm SINON
 
-    and  décalage et aller à l'état 100
-    or   décalage et aller à l'état 101
-
-    and      [réduction par utilisation de la règle 43 (EXPRESSION_COND)]
-    or       [réduction par utilisation de la règle 43 (EXPRESSION_COND)]
-    $défaut  réduction par utilisation de la règle 43 (EXPRESSION_COND)
+    accolade_ouvr  décalage et aller à l'état 125
 
 
 état 116
 
-   43 EXPRESSION_COND: EXPRESSION_COND . and EXPRESSION_COND
-   44                | EXPRESSION_COND . or EXPRESSION_COND
-   44                | EXPRESSION_COND or EXPRESSION_COND .
+   45 EXPRESSION_COND: EXPRESSION_COND . and EXPRESSION_COND
+   45                | EXPRESSION_COND and EXPRESSION_COND .
+   46                | EXPRESSION_COND . or EXPRESSION_COND
 
-    and  décalage et aller à l'état 100
-    or   décalage et aller à l'état 101
-
-    and      [réduction par utilisation de la règle 44 (EXPRESSION_COND)]
-    or       [réduction par utilisation de la règle 44 (EXPRESSION_COND)]
-    $défaut  réduction par utilisation de la règle 44 (EXPRESSION_COND)
+    $défaut  réduction par utilisation de la règle 45 (EXPRESSION_COND)
 
 
 état 117
 
-   32 INPUT: input parenthese_ouvrante idf parenthese_fermante pnt_virgul .
+   45 EXPRESSION_COND: EXPRESSION_COND . and EXPRESSION_COND
+   46                | EXPRESSION_COND . or EXPRESSION_COND
+   46                | EXPRESSION_COND or EXPRESSION_COND .
 
-    $défaut  réduction par utilisation de la règle 32 (INPUT)
+    and  décalage et aller à l'état 101
+
+    $défaut  réduction par utilisation de la règle 46 (EXPRESSION_COND)
 
 
 état 118
 
-   37 DANS_OUTPUT: idf virgul DANS_OUTPUT .
+   35 INPUT: lire parenthese_ouvr idf parenthese_ferm pnt_virgul .
 
-    $défaut  réduction par utilisation de la règle 37 (DANS_OUTPUT)
+    $défaut  réduction par utilisation de la règle 35 (INPUT)
 
 
 état 119
 
-   36 DANS_OUTPUT: chaine virgul DANS_OUTPUT .
+   40 DANS_OUTPUT: idf virgul DANS_OUTPUT .
 
-    $défaut  réduction par utilisation de la règle 36 (DANS_OUTPUT)
+    $défaut  réduction par utilisation de la règle 40 (DANS_OUTPUT)
 
 
 état 120
 
-   33 OUTPUT: output parenthese_ouvrante DANS_OUTPUT parenthese_fermante pnt_virgul .
+   39 DANS_OUTPUT: chaine virgul DANS_OUTPUT .
 
-    $défaut  réduction par utilisation de la règle 33 (OUTPUT)
+    $défaut  réduction par utilisation de la règle 39 (DANS_OUTPUT)
 
 
 état 121
 
-   52 LOOP_FOR: for idf from entier_pos to . entier_pos step entier_pos accolade_ouvr INSTRUCTIONS accolade_ferm
+   36 OUTPUT: output parenthese_ouvr DANS_OUTPUT parenthese_ferm pnt_virgul .
 
-    entier_pos  décalage et aller à l'état 126
+    $défaut  réduction par utilisation de la règle 36 (OUTPUT)
 
 
 état 122
 
-   51 LOOP_DO: do accolade_ouvr INSTRUCTIONS accolade_ferm while . EXPRESSION_COND pnt_virgul
+   54 LOOP_FOR: boucle_for idf from entier_pos to . entier_pos step entier_pos accolade_ouvr INSTRUCTIONS accolade_ferm
 
-    idf         décalage et aller à l'état 65
-    entier_pos  décalage et aller à l'état 59
-    entier_neg  décalage et aller à l'état 60
-    float_pos   décalage et aller à l'état 61
-    float_neg   décalage et aller à l'état 62
-    neg         décalage et aller à l'état 71
-
-    VALEUR           aller à l'état 72
-    OPERAND          aller à l'état 73
-    EXPRESSION_COND  aller à l'état 127
+    entier_pos  décalage et aller à l'état 126
 
 
 état 123
+
+   53 LOOP_DO: boucle_do accolade_ouvr INSTRUCTIONS accolade_ferm boucle_while . parenthese_ouvr EXPRESSION_COND parenthese_ferm pnt_virgul
+
+    parenthese_ouvr  décalage et aller à l'état 127
+
+
+état 124
 
    13 TYPE2: corechet_ouvr TYPE1 pnt_virgul entier_pos corechet_ferm pnt_virgul .
 
     $défaut  réduction par utilisation de la règle 13 (TYPE2)
 
 
-état 124
-
-   42 EXPRESSION_COND: neg OPERAND OPERATEUR_COND OPERAND .
-
-    $défaut  réduction par utilisation de la règle 42 (EXPRESSION_COND)
-
-
 état 125
 
-   38 CONDITION: if parenthese_ouvrante EXPRESSION_COND parenthese_fermante then accolade_ouvr . INSTRUCTIONS SINON
+   41 CONDITION: if_cond parenthese_ouvr EXPRESSION_COND parenthese_ferm then accolade_ouvr . INSTRUCTIONS accolade_ferm SINON
 
-    idf     décalage et aller à l'état 27
-    if      décalage et aller à l'état 28
-    input   décalage et aller à l'état 29
-    output  décalage et aller à l'état 30
-    for     décalage et aller à l'état 31
-    do      décalage et aller à l'état 32
+    idf         décalage et aller à l'état 27
+    if_cond     décalage et aller à l'état 28
+    lire        décalage et aller à l'état 29
+    output      décalage et aller à l'état 30
+    boucle_for  décalage et aller à l'état 31
+    boucle_do   décalage et aller à l'état 32
 
-    idf      [réduction par utilisation de la règle 14 (INSTRUCTIONS)]
-    if       [réduction par utilisation de la règle 14 (INSTRUCTIONS)]
-    input    [réduction par utilisation de la règle 14 (INSTRUCTIONS)]
-    output   [réduction par utilisation de la règle 14 (INSTRUCTIONS)]
-    for      [réduction par utilisation de la règle 14 (INSTRUCTIONS)]
-    do       [réduction par utilisation de la règle 14 (INSTRUCTIONS)]
     $défaut  réduction par utilisation de la règle 14 (INSTRUCTIONS)
 
     INSTRUCTIONS  aller à l'état 128
@@ -1447,104 +1408,105 @@ LOOP_FOR (77)
 
 état 126
 
-   52 LOOP_FOR: for idf from entier_pos to entier_pos . step entier_pos accolade_ouvr INSTRUCTIONS accolade_ferm
+   54 LOOP_FOR: boucle_for idf from entier_pos to entier_pos . step entier_pos accolade_ouvr INSTRUCTIONS accolade_ferm
 
     step  décalage et aller à l'état 129
 
 
 état 127
 
-   43 EXPRESSION_COND: EXPRESSION_COND . and EXPRESSION_COND
-   44                | EXPRESSION_COND . or EXPRESSION_COND
-   51 LOOP_DO: do accolade_ouvr INSTRUCTIONS accolade_ferm while EXPRESSION_COND . pnt_virgul
+   53 LOOP_DO: boucle_do accolade_ouvr INSTRUCTIONS accolade_ferm boucle_while parenthese_ouvr . EXPRESSION_COND parenthese_ferm pnt_virgul
 
-    pnt_virgul  décalage et aller à l'état 130
-    and         décalage et aller à l'état 100
-    or          décalage et aller à l'état 101
+    idf         décalage et aller à l'état 65
+    entier_pos  décalage et aller à l'état 59
+    entier_neg  décalage et aller à l'état 60
+    float_pos   décalage et aller à l'état 61
+    float_neg   décalage et aller à l'état 62
+    neg         décalage et aller à l'état 67
+
+    VALEUR           aller à l'état 73
+    OPERAND          aller à l'état 74
+    EXPRESSION_COND  aller à l'état 130
 
 
 état 128
 
-   38 CONDITION: if parenthese_ouvrante EXPRESSION_COND parenthese_fermante then accolade_ouvr INSTRUCTIONS . SINON
+   41 CONDITION: if_cond parenthese_ouvr EXPRESSION_COND parenthese_ferm then accolade_ouvr INSTRUCTIONS . accolade_ferm SINON
 
-    else  décalage et aller à l'état 131
-
-    else     [réduction par utilisation de la règle 40 (SINON)]
-    $défaut  réduction par utilisation de la règle 40 (SINON)
-
-    SINON  aller à l'état 132
+    accolade_ferm  décalage et aller à l'état 131
 
 
 état 129
 
-   52 LOOP_FOR: for idf from entier_pos to entier_pos step . entier_pos accolade_ouvr INSTRUCTIONS accolade_ferm
+   54 LOOP_FOR: boucle_for idf from entier_pos to entier_pos step . entier_pos accolade_ouvr INSTRUCTIONS accolade_ferm
 
-    entier_pos  décalage et aller à l'état 133
+    entier_pos  décalage et aller à l'état 132
 
 
 état 130
 
-   51 LOOP_DO: do accolade_ouvr INSTRUCTIONS accolade_ferm while EXPRESSION_COND pnt_virgul .
+   45 EXPRESSION_COND: EXPRESSION_COND . and EXPRESSION_COND
+   46                | EXPRESSION_COND . or EXPRESSION_COND
+   53 LOOP_DO: boucle_do accolade_ouvr INSTRUCTIONS accolade_ferm boucle_while parenthese_ouvr EXPRESSION_COND . parenthese_ferm pnt_virgul
 
-    $défaut  réduction par utilisation de la règle 51 (LOOP_DO)
+    parenthese_ferm  décalage et aller à l'état 133
+    and              décalage et aller à l'état 101
+    or               décalage et aller à l'état 102
 
 
 état 131
 
-   39 SINON: else . accolade_ouvr INSTRUCTIONS accolade_ferm
+   41 CONDITION: if_cond parenthese_ouvr EXPRESSION_COND parenthese_ferm then accolade_ouvr INSTRUCTIONS accolade_ferm . SINON
 
-    accolade_ouvr  décalage et aller à l'état 134
+    else_cond  décalage et aller à l'état 134
+
+    $défaut  réduction par utilisation de la règle 43 (SINON)
+
+    SINON  aller à l'état 135
 
 
 état 132
 
-   38 CONDITION: if parenthese_ouvrante EXPRESSION_COND parenthese_fermante then accolade_ouvr INSTRUCTIONS SINON .
+   54 LOOP_FOR: boucle_for idf from entier_pos to entier_pos step entier_pos . accolade_ouvr INSTRUCTIONS accolade_ferm
 
-    $défaut  réduction par utilisation de la règle 38 (CONDITION)
+    accolade_ouvr  décalage et aller à l'état 136
 
 
 état 133
 
-   52 LOOP_FOR: for idf from entier_pos to entier_pos step entier_pos . accolade_ouvr INSTRUCTIONS accolade_ferm
+   53 LOOP_DO: boucle_do accolade_ouvr INSTRUCTIONS accolade_ferm boucle_while parenthese_ouvr EXPRESSION_COND parenthese_ferm . pnt_virgul
 
-    accolade_ouvr  décalage et aller à l'état 135
+    pnt_virgul  décalage et aller à l'état 137
 
 
 état 134
 
-   39 SINON: else accolade_ouvr . INSTRUCTIONS accolade_ferm
+   42 SINON: else_cond . accolade_ouvr INSTRUCTIONS accolade_ferm
 
-    idf     décalage et aller à l'état 27
-    if      décalage et aller à l'état 28
-    input   décalage et aller à l'état 29
-    output  décalage et aller à l'état 30
-    for     décalage et aller à l'état 31
-    do      décalage et aller à l'état 32
-
-    $défaut  réduction par utilisation de la règle 14 (INSTRUCTIONS)
-
-    INSTRUCTIONS  aller à l'état 136
-    INPUT         aller à l'état 34
-    OUTPUT        aller à l'état 35
-    CONDITION     aller à l'état 36
-    LOOP_DO       aller à l'état 37
-    LOOP_FOR      aller à l'état 38
+    accolade_ouvr  décalage et aller à l'état 138
 
 
 état 135
 
-   52 LOOP_FOR: for idf from entier_pos to entier_pos step entier_pos accolade_ouvr . INSTRUCTIONS accolade_ferm
+   41 CONDITION: if_cond parenthese_ouvr EXPRESSION_COND parenthese_ferm then accolade_ouvr INSTRUCTIONS accolade_ferm SINON .
 
-    idf     décalage et aller à l'état 27
-    if      décalage et aller à l'état 28
-    input   décalage et aller à l'état 29
-    output  décalage et aller à l'état 30
-    for     décalage et aller à l'état 31
-    do      décalage et aller à l'état 32
+    $défaut  réduction par utilisation de la règle 41 (CONDITION)
+
+
+état 136
+
+   54 LOOP_FOR: boucle_for idf from entier_pos to entier_pos step entier_pos accolade_ouvr . INSTRUCTIONS accolade_ferm
+
+    idf         décalage et aller à l'état 27
+    if_cond     décalage et aller à l'état 28
+    lire        décalage et aller à l'état 29
+    output      décalage et aller à l'état 30
+    boucle_for  décalage et aller à l'état 31
+    boucle_do   décalage et aller à l'état 32
 
     $défaut  réduction par utilisation de la règle 14 (INSTRUCTIONS)
 
-    INSTRUCTIONS  aller à l'état 137
+    INSTRUCTIONS  aller à l'état 139
     INPUT         aller à l'état 34
     OUTPUT        aller à l'état 35
     CONDITION     aller à l'état 36
@@ -1552,29 +1514,57 @@ LOOP_FOR (77)
     LOOP_FOR      aller à l'état 38
 
 
-état 136
-
-   39 SINON: else accolade_ouvr INSTRUCTIONS . accolade_ferm
-
-    accolade_ferm  décalage et aller à l'état 138
-
-
 état 137
 
-   52 LOOP_FOR: for idf from entier_pos to entier_pos step entier_pos accolade_ouvr INSTRUCTIONS . accolade_ferm
+   53 LOOP_DO: boucle_do accolade_ouvr INSTRUCTIONS accolade_ferm boucle_while parenthese_ouvr EXPRESSION_COND parenthese_ferm pnt_virgul .
 
-    accolade_ferm  décalage et aller à l'état 139
+    $défaut  réduction par utilisation de la règle 53 (LOOP_DO)
 
 
 état 138
 
-   39 SINON: else accolade_ouvr INSTRUCTIONS accolade_ferm .
+   42 SINON: else_cond accolade_ouvr . INSTRUCTIONS accolade_ferm
 
-    $défaut  réduction par utilisation de la règle 39 (SINON)
+    idf         décalage et aller à l'état 27
+    if_cond     décalage et aller à l'état 28
+    lire        décalage et aller à l'état 29
+    output      décalage et aller à l'état 30
+    boucle_for  décalage et aller à l'état 31
+    boucle_do   décalage et aller à l'état 32
+
+    $défaut  réduction par utilisation de la règle 14 (INSTRUCTIONS)
+
+    INSTRUCTIONS  aller à l'état 140
+    INPUT         aller à l'état 34
+    OUTPUT        aller à l'état 35
+    CONDITION     aller à l'état 36
+    LOOP_DO       aller à l'état 37
+    LOOP_FOR      aller à l'état 38
 
 
 état 139
 
-   52 LOOP_FOR: for idf from entier_pos to entier_pos step entier_pos accolade_ouvr INSTRUCTIONS accolade_ferm .
+   54 LOOP_FOR: boucle_for idf from entier_pos to entier_pos step entier_pos accolade_ouvr INSTRUCTIONS . accolade_ferm
 
-    $défaut  réduction par utilisation de la règle 52 (LOOP_FOR)
+    accolade_ferm  décalage et aller à l'état 141
+
+
+état 140
+
+   42 SINON: else_cond accolade_ouvr INSTRUCTIONS . accolade_ferm
+
+    accolade_ferm  décalage et aller à l'état 142
+
+
+état 141
+
+   54 LOOP_FOR: boucle_for idf from entier_pos to entier_pos step entier_pos accolade_ouvr INSTRUCTIONS accolade_ferm .
+
+    $défaut  réduction par utilisation de la règle 54 (LOOP_FOR)
+
+
+état 142
+
+   42 SINON: else_cond accolade_ouvr INSTRUCTIONS accolade_ferm .
+
+    $défaut  réduction par utilisation de la règle 42 (SINON)

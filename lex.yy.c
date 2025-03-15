@@ -789,7 +789,7 @@ YY_RULE_SETUP
 case 9:
 YY_RULE_SETUP
 #line 40 "lexical.l"
-{printf("mot cle : %s \n",yytext); return if ;}
+{printf("mot cle : %s \n",yytext); return if_cond ;}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
@@ -804,17 +804,17 @@ YY_RULE_SETUP
 case 12:
 YY_RULE_SETUP
 #line 43 "lexical.l"
-{printf("mot cle : %s \n",yytext); return do ;}
+{printf("mot cle : %s \n",yytext); return boucle_do ;}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
 #line 44 "lexical.l"
-{printf("mot cle : %s \n",yytext); return while ;}
+{printf("mot cle : %s \n",yytext); return boucle_while ;}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
 #line 45 "lexical.l"
-{printf("mot cle : %s \n",yytext); return for ;}
+{printf("mot cle : %s \n",yytext); return boucle_for ;}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
@@ -829,22 +829,22 @@ YY_RULE_SETUP
 case 17:
 YY_RULE_SETUP
 #line 48 "lexical.l"
-{printf("mot cle : %s \n",yytext); return else ;}
+{printf("mot cle : %s \n",yytext); return else_cond ;}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
 #line 49 "lexical.l"
-{printf("mot cle : %s \n",yytext); return int ;}
+{printf("mot cle : %s \n",yytext); return entier ;}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
 #line 50 "lexical.l"
-{printf("mot cle : %s \n",yytext); return float ;}
+{printf("mot cle : %s \n",yytext); return reel ;}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
 #line 51 "lexical.l"
-{printf("mot cle : %s \n",yytext); return input ;}
+{printf("mot cle : %s \n",yytext); return lire ;}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
@@ -854,7 +854,7 @@ YY_RULE_SETUP
 case 22:
 YY_RULE_SETUP
 #line 53 "lexical.l"
-{printf("declaration const \n"); return const}
+{printf("declaration const \n"); return constante ;}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
@@ -869,7 +869,7 @@ YY_RULE_SETUP
 case 25:
 YY_RULE_SETUP
 #line 58 "lexical.l"
-{ return comment_plsr ;
+{ 
     printf("un commentaire plusieurs lignes \n");
     char *varchar = strdup(yytext);
     int j;  
@@ -878,11 +878,12 @@ YY_RULE_SETUP
             num_de_lignes++;
         }
     }
+    return comment_plsr ;
 }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 68 "lexical.l"
+#line 69 "lexical.l"
 { if (yyleng > 14) 
     {printf ("erreur lexicale : le IDF depasse 14 caracteres \n"); return idf ;}
     else{
@@ -891,12 +892,12 @@ YY_RULE_SETUP
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 73 "lexical.l"
-{ printf("entier positif\n"); return entier_pos}
+#line 74 "lexical.l"
+{ printf("entier positif\n"); return entier_pos ;}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 75 "lexical.l"
+#line 76 "lexical.l"
 {
         char *varstr=strdup(yytext+1);
         varstr[strlen(varstr)-1]='\0';
@@ -914,12 +915,12 @@ YY_RULE_SETUP
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 91 "lexical.l"
+#line 92 "lexical.l"
 { printf("reel non signe positif\n"); return reel_pos ;}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 92 "lexical.l"
+#line 93 "lexical.l"
 {
         char *varstr = strdup(yytext+ 1); 
         varstr[strlen(varstr) - 1] = '\0';
@@ -934,135 +935,135 @@ YY_RULE_SETUP
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 104 "lexical.l"
+#line 105 "lexical.l"
 {printf("operateur : negation \n" ); return neg ;}
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 105 "lexical.l"
+#line 106 "lexical.l"
 {printf("pvg\n"); return pnt_virgul ;}
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 106 "lexical.l"
+#line 107 "lexical.l"
 {printf("deux points \n"); return deux_pnts ;}
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 107 "lexical.l"
+#line 108 "lexical.l"
 {printf("le vergule \n"); return virgul ;}
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 108 "lexical.l"
+#line 109 "lexical.l"
 {printf("parenthese_ouvrante \n"); return parenthese_ouvr ;}
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 109 "lexical.l"
+#line 110 "lexical.l"
 {printf("parenthese_fermante \n"); return parenthese_ferm ;}  
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 110 "lexical.l"
+#line 111 "lexical.l"
 {printf("accolade_ouvrante \n"); return accolade_ouvr ;}
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 111 "lexical.l"
+#line 112 "lexical.l"
 {printf("accolade_fermante \n"); return accolade_ferm ;}
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 112 "lexical.l"
+#line 113 "lexical.l"
 {printf("soustract \n"); return soustract ;}
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 113 "lexical.l"
+#line 114 "lexical.l"
 {printf("addition \n"); return add ;}
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 114 "lexical.l"
+#line 115 "lexical.l"
 {printf("multiplication \n"); return multipl ;}
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 115 "lexical.l"
-{printf("division \n"); return div ;}
+#line 116 "lexical.l"
+{printf("division \n"); return division ;}
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 116 "lexical.l"
+#line 117 "lexical.l"
 {printf("affectation \n"); return affect ;}
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 117 "lexical.l"
+#line 118 "lexical.l"
 {printf("Guillemets \n"); }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 118 "lexical.l"
+#line 119 "lexical.l"
 {printf("corechets ouvrante \n"); return corechet_ouvr ;}
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 119 "lexical.l"
+#line 120 "lexical.l"
 {printf("corechets fermente \n"); return corechet_ferm ;}
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 120 "lexical.l"
+#line 121 "lexical.l"
 { printf("egale\n"); return egal ;}
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 122 "lexical.l"
+#line 123 "lexical.l"
 {printf("inferieur \n"); return inf ;}
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 123 "lexical.l"
+#line 124 "lexical.l"
 {printf("superieur \n"); return sup ;}
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 124 "lexical.l"
+#line 125 "lexical.l"
 {printf("superieur_ou_egale \n"); return sup_ou_egal ;}
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 125 "lexical.l"
+#line 126 "lexical.l"
 {printf("inferieur_ou_egae \n"); return inf_ou_egal ;}
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 126 "lexical.l"
+#line 127 "lexical.l"
 {printf("egale \n"); return identiq ;}
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 127 "lexical.l"
+#line 128 "lexical.l"
 {printf("different_de \n"); return diff ;}
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 129 "lexical.l"
+#line 130 "lexical.l"
 {printf("espace \n");}
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 133 "lexical.l"
+#line 134 "lexical.l"
 {printf("erreur lexicale a la ligne %d \n", num_de_lignes);} 
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 135 "lexical.l"
+#line 136 "lexical.l"
 ECHO;
 	YY_BREAK
-#line 1066 "lex.yy.c"
+#line 1067 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1948,7 +1949,7 @@ int main()
 	return 0;
 	}
 #endif
-#line 135 "lexical.l"
+#line 136 "lexical.l"
 
 int main(){
     yylex();

@@ -71,10 +71,12 @@
 #line 2 "syntax.y"
 
 #include<stdio.h>
+extern int num_de_lignes;
+
 
 
 /* Line 189 of yacc.c  */
-#line 78 "syntax.tab.c"
+#line 80 "syntax.tab.c"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
@@ -111,11 +113,11 @@
      EndPg = 265,
      let = 266,
      deux_pnts = 267,
-     const = 268,
+     constante = 268,
      egal = 269,
      virgul = 270,
-     float = 271,
-     int = 272,
+     reel = 271,
+     entier = 272,
      entier_pos = 273,
      corechet_ouvr = 274,
      corechet_ferm = 275,
@@ -124,15 +126,15 @@
      float_neg = 278,
      affect = 279,
      chaine = 280,
-     if = 281,
+     if_cond = 281,
      then = 282,
-     parenthese_fermante = 283,
-     parenthese_ouvrante = 284,
-     input = 285,
+     parenthese_ferm = 283,
+     parenthese_ouvr = 284,
+     lire = 285,
      output = 286,
      add = 287,
      soustract = 288,
-     div = 289,
+     division = 289,
      multipl = 290,
      inf = 291,
      sup = 292,
@@ -142,15 +144,15 @@
      and = 296,
      or = 297,
      diff = 298,
-     for = 299,
+     boucle_for = 299,
      from = 300,
      to = 301,
      step = 302,
-     do = 303,
-     while = 304,
+     boucle_do = 303,
+     boucle_while = 304,
      comment_une = 305,
      comment_plsr = 306,
-     else = 307,
+     else_cond = 307,
      reel_pos = 308,
      reel_neg = 309,
      identiq = 310
@@ -171,7 +173,7 @@ typedef int YYSTYPE;
 
 
 /* Line 264 of yacc.c  */
-#line 175 "syntax.tab.c"
+#line 177 "syntax.tab.c"
 
 #ifdef short
 # undef short
@@ -483,12 +485,12 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    19,    19,    21,    21,    21,    23,    23,    23,    23,
-      25,    25,    29,    29,    31,    33,    33,    33,    33,    33,
-      33,    33,    33,    35,    37,    40,    40,    40,    40,    42,
-      42,    42,    44,    44,    44,    44,    46,    48,    50,    50,
-      50,    50,    52,    54,    54,    56,    56,    56,    58,    58,
-      58,    58,    58,    58,    60,    62
+       0,    21,    21,    23,    23,    23,    25,    25,    25,    25,
+      27,    27,    29,    29,    31,    33,    33,    33,    33,    33,
+      33,    33,    33,    35,    37,    39,    39,    39,    39,    41,
+      41,    41,    43,    43,    43,    43,    45,    47,    49,    49,
+      49,    49,    51,    53,    53,    55,    55,    55,    57,    57,
+      57,    57,    57,    57,    59,    61
 };
 #endif
 
@@ -499,17 +501,18 @@ static const char *const yytname[] =
 {
   "$end", "error", "$undefined", "MainPrgm", "idf", "pnt_virgul", "var",
   "BeginPg", "accolade_ouvr", "accolade_ferm", "EndPg", "let", "deux_pnts",
-  "const", "egal", "virgul", "float", "int", "entier_pos", "corechet_ouvr",
-  "corechet_ferm", "entier_neg", "float_pos", "float_neg", "affect",
-  "chaine", "if", "then", "parenthese_fermante", "parenthese_ouvrante",
-  "input", "output", "add", "soustract", "div", "multipl", "inf", "sup",
-  "inf_ou_egal", "sup_ou_egal", "neg", "and", "or", "diff", "for", "from",
-  "to", "step", "do", "while", "comment_une", "comment_plsr", "else",
-  "reel_pos", "reel_neg", "identiq", "$accept", "DEBUT", "DECLARATION",
-  "VALEUR", "VARIABLE1", "TYPE1", "TYPE2", "INSTRUCTIONS",
-  "AFFECTATION_TAB", "AFFECTATION_NOR", "EXPRESSION", "OPERAND",
-  "OPERATEUR_ARITHM", "INPUT", "OUTPUT", "DANS_OUTPUT", "CONDITION",
-  "SINON", "EXPRESSION_COND", "OPERATEUR_COND", "LOOP_DO", "LOOP_FOR", 0
+  "constante", "egal", "virgul", "reel", "entier", "entier_pos",
+  "corechet_ouvr", "corechet_ferm", "entier_neg", "float_pos", "float_neg",
+  "affect", "chaine", "if_cond", "then", "parenthese_ferm",
+  "parenthese_ouvr", "lire", "output", "add", "soustract", "division",
+  "multipl", "inf", "sup", "inf_ou_egal", "sup_ou_egal", "neg", "and",
+  "or", "diff", "boucle_for", "from", "to", "step", "boucle_do",
+  "boucle_while", "comment_une", "comment_plsr", "else_cond", "reel_pos",
+  "reel_neg", "identiq", "$accept", "DEBUT", "DECLARATION", "VALEUR",
+  "VARIABLE1", "TYPE1", "TYPE2", "INSTRUCTIONS", "AFFECTATION_TAB",
+  "AFFECTATION_NOR", "EXPRESSION", "OPERAND", "OPERATEUR_ARITHM", "INPUT",
+  "OUTPUT", "DANS_OUTPUT", "CONDITION", "SINON", "EXPRESSION_COND",
+  "OPERATEUR_COND", "LOOP_DO", "LOOP_FOR", 0
 };
 #endif
 
@@ -1488,7 +1491,7 @@ yyreduce:
       
 
 /* Line 1455 of yacc.c  */
-#line 1492 "syntax.tab.c"
+#line 1495 "syntax.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1700,7 +1703,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 66 "syntax.y"
+#line 65 "syntax.y"
 
 int main() {
     yyparse();
@@ -1712,3 +1715,6 @@ int yyerror(char *msg)
 { 
     printf(" Erreur syntaxique a la ligne %s " , num_de_lignes);
 }
+
+
+
